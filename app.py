@@ -137,6 +137,14 @@ class Handler(BaseHTTPRequestHandler):
         print("\nStopping server...")
     finally:
         server.server_close()
+
+    return 0
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopping server...")
+    finally:
+        server.server_close()
     return 0
 
 
