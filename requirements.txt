@@ -8,3 +8,4 @@ scikit-learn
 ultralytics
 ucimlrepo
 python-whois
+gunicorn
