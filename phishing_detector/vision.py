@@ -83,13 +83,17 @@ def analyze_image(image_path: str | Path) -> VisualResult:
     if not path.exists():
         return VisualResult(0.0, ["Screenshot file was not found"], {})
 
-    image = cv2.imread(str(path))
-    if image is None:
-        return VisualResult(0.0, ["Screenshot could not be read"], {})
+   image = cv2.imread(str(path))
 
-    features = _layout_features(image)
-    reasons: list[str] = []
-    score = 0.0
+if image is None:
+    return VisualResult(0.0, ["Screenshot could not be read"], {})
+
+
+image = cv2.resize(image, (640, 640))
+
+features = _layout_features(image)
+reasons: list[str] = []
+score = 0.0
 
     if features["white_ratio"] > 0.55 and features["rect_like"] >= 5:
         score += 0.18
@@ -101,7 +105,7 @@ def analyze_image(image_path: str | Path) -> VisualResult:
         score += 0.10
         reasons.append("Multiple large rectangular regions were detected")
 
-    yolo_model = _load_yolo()
+    yolo_model = None
     if yolo_model is not None:
         try:
             results = yolo_model.predict(source=str(path), verbose=False)
