@@ -112,15 +112,14 @@ class Handler(BaseHTTPRequestHandler):
             )
             return
 
-               body = safe_result({"url": url})
+                      body = safe_result({"url": url})
         self._send(
             json.dumps(body).encode("utf-8"),
             "application/json; charset=utf-8",
         )
 
-        def log_message(self, format: str, *args) -> None:
+    def log_message(self, format: str, *args) -> None:
         return
-
 
 def main() -> int:
     server = ThreadingHTTPServer((HOST, PORT), Handler)
