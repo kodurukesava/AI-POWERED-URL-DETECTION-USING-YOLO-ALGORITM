@@ -51,7 +51,7 @@ def train_model(seed: int = 7) -> ModelBundle:
     min_samples_leaf=1,
     n_jobs=1,
 )
-    )
+    
     model.fit(x_train, y_train)
 
     predictions = model.predict(x_test)
