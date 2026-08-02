@@ -115,10 +115,11 @@ class Handler(BaseHTTPRequestHandler):
         body = safe_result({"url": url})
         self._send(json.dumps(body).encode("utf-8"), "application/json; charset=utf-8")
 
-    def log_message(self, format: str, *args) -> None:  # noqa: A003
+        def log_message(self, format: str, *args) -> None:
         return
 
-    def main() -> int:
+
+def main() -> int:
     server = ThreadingHTTPServer((HOST, PORT), Handler)
 
     print(f"Server running on {HOST}:{PORT}")
@@ -130,21 +131,6 @@ class Handler(BaseHTTPRequestHandler):
     finally:
         server.server_close()
 
-    return 0
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("\nStopping server...")
-    finally:
-        server.server_close()
-
-    return 0
-    try:
-        server.serve_forever()
-    except KeyboardInterrupt:
-        print("\nStopping server...")
-    finally:
-        server.server_close()
     return 0
 
 
