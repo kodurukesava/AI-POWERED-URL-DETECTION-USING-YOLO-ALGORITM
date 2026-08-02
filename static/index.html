@@ -1,0 +1,46 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>AI-Powered Phishing Detection using Multimodal Analysis (YOLO + URL Features)</title>
+  <link rel="stylesheet" href="/styles.css">
+</head>
+<body>
+  <main class="app-shell">
+    <section class="hero">
+      <div class="hero-copy">
+        <p class="eyebrow">AI-Powered Phishing Detection using Multimodal Analysis</p>
+        <h1>Phishing Detection using YOLO + URL Features</h1>
+        <p class="lede">Paste a URL and optionally upload a screenshot. The browser checks URL features and can run YOLO-based visual analysis too.</p>
+      </div>
+      <div class="hero-badge">
+        <span class="badge-dot"></span>
+        <span>localhost app</span>
+      </div>
+    </section>
+
+    <section class="workspace">
+      <div class="panel input-panel">
+        <label for="url">URL</label>
+        <input id="url" type="url" placeholder="https://example.com/login" autocomplete="off">
+        <label for="screenshot" class="file-label">Screenshot for YOLO</label>
+        <input id="screenshot" type="file" accept="image/*">
+        <button id="checkBtn" type="button">Check URL</button>
+        <p class="hint">The first request may take a little longer while the model loads.</p>
+      </div>
+
+      <div class="panel result-panel">
+        <p id="verdict" class="verdict neutral">READY</p>
+        <p id="confidence" class="confidence">Enter a URL to get started.</p>
+        <div id="score" class="score"></div>
+        <ul id="reasons" class="reasons">
+          <li>No check has been run yet.</li>
+        </ul>
+      </div>
+    </section>
+  </main>
+
+  <script src="/script.js"></script>
+</body>
+</html>

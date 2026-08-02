@@ -1,0 +1,10 @@
+joblib
+numpy
+opencv-python
+pandas
+Pillow
+requests
+scikit-learn
+ultralytics
+ucimlrepo
+python-whois
