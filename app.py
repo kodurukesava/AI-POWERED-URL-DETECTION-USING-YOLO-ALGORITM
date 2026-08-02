@@ -112,8 +112,11 @@ class Handler(BaseHTTPRequestHandler):
             )
             return
 
-        body = safe_result({"url": url})
-        self._send(json.dumps(body).encode("utf-8"), "application/json; charset=utf-8")
+               body = safe_result({"url": url})
+        self._send(
+            json.dumps(body).encode("utf-8"),
+            "application/json; charset=utf-8",
+        )
 
         def log_message(self, format: str, *args) -> None:
         return
