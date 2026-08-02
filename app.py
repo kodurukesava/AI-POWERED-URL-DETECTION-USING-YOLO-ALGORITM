@@ -3,11 +3,7 @@ import os
 import json
 import threading
 import base64
-import json
-import threading
-import base64
 import tempfile
-import webbrowser
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from pathlib import Path
 from urllib.parse import urlparse
@@ -122,12 +118,19 @@ class Handler(BaseHTTPRequestHandler):
     def log_message(self, format: str, *args) -> None:  # noqa: A003
         return
 
-
-def main() -> int:
+    def main() -> int:
     server = ThreadingHTTPServer((HOST, PORT), Handler)
-    url = f"http://{HOST}:{PORT}"
-    print(f"Server running at {url}")
-    threading.Timer(0.8, lambda: webbrowser.open(url)).start()
+
+    print(f"Server running on {HOST}:{PORT}")
+
+    try:
+        server.serve_forever()
+    except KeyboardInterrupt:
+        print("\nStopping server...")
+    finally:
+        server.server_close()
+
+    return 0
     try:
         server.serve_forever()
     except KeyboardInterrupt:
