@@ -1,5 +1,8 @@
 from __future__ import annotations
-
+import os
+import json
+import threading
+import base64
 import json
 import threading
 import base64
@@ -12,8 +15,10 @@ from urllib.parse import urlparse
 from phishing_detector.predictor import PhishingDetector
 
 
-HOST = "127.0.0.1"
-PORT = 8000
+import os
+
+HOST = "0.0.0.0"
+PORT = int(os.environ.get("PORT", 10000))
 
 BASE_DIR = Path(__file__).resolve().parent
 STATIC_DIR = BASE_DIR / "static"
