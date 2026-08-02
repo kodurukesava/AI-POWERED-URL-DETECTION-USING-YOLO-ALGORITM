@@ -44,12 +44,13 @@ def train_model(seed: int = 7) -> ModelBundle:
     )
 
     model = ExtraTreesClassifier(
-        n_estimators=500,
-        random_state=seed,
-        class_weight="balanced",
-        max_features="sqrt",
-        min_samples_leaf=1,
-        n_jobs=-1,
+    n_estimators=100,
+    random_state=seed,
+    class_weight="balanced",
+    max_features="sqrt",
+    min_samples_leaf=1,
+    n_jobs=1,
+)
     )
     model.fit(x_train, y_train)
 
