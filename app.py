@@ -1,7 +1,7 @@
 from __future__ import annotations
+
 import os
 import json
-import threading
 import base64
 import tempfile
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
@@ -9,9 +9,6 @@ from pathlib import Path
 from urllib.parse import urlparse
 
 from phishing_detector.predictor import PhishingDetector
-
-
-import os
 
 HOST = "0.0.0.0"
 PORT = int(os.environ.get("PORT", 10000))
@@ -32,21 +29,28 @@ def read_text(path: Path) -> str:
 def safe_result(payload: dict[str, str]) -> dict[str, str | list[str]]:
     url = payload.get("url", "").strip()
     image_data = payload.get("image_data", "").strip()
-    temp_path: Path | None = None
-    image_path: Path | None = None
+
+    temp_path = None
+    image_path = None
+
     if image_data:
         try:
             header, encoded = image_data.split(",", 1)
+
             suffix = ".png"
             if "jpeg" in header or "jpg" in header:
                 suffix = ".jpg"
             elif "webp" in header:
                 suffix = ".webp"
+
             raw_bytes = base64.b64decode(encoded)
+
             with tempfile.NamedTemporaryFile(delete=False, suffix=suffix) as handle:
                 handle.write(raw_bytes)
                 temp_path = Path(handle.name)
+
             image_path = temp_path
+
         except Exception:
             image_path = None
 
@@ -65,63 +69,73 @@ def safe_result(payload: dict[str, str]) -> dict[str, str | list[str]]:
 
 
 class Handler(BaseHTTPRequestHandler):
-    def _send(self, body: bytes, content_type: str, status: int = 200) -> None:
+
+    def _send(self, body: bytes, content_type: str, status: int = 200):
         self.send_response(status)
         self.send_header("Content-Type", content_type)
         self.send_header("Content-Length", str(len(body)))
         self.end_headers()
         self.wfile.write(body)
 
-    def do_GET(self) -> None:  # noqa: N802
+    def do_GET(self):
         path = urlparse(self.path).path
-        if path in {"/", "/index.html"}:
-            self._send(read_text(INDEX_FILE).encode("utf-8"), "text/html; charset=utf-8")
-            return
-        if path == "/styles.css":
-            self._send(read_text(STYLE_FILE).encode("utf-8"), "text/css; charset=utf-8")
-            return
-        if path == "/script.js":
-            self._send(read_text(SCRIPT_FILE).encode("utf-8"), "application/javascript; charset=utf-8")
-            return
-        self._send(b"Not Found", "text/plain; charset=utf-8", status=404)
 
-    def do_POST(self) -> None:  # noqa: N802
+        if path in {"/", "/index.html"}:
+            self._send(read_text(INDEX_FILE).encode(), "text/html; charset=utf-8")
+            return
+
+        if path == "/styles.css":
+            self._send(read_text(STYLE_FILE).encode(), "text/css; charset=utf-8")
+            return
+
+        if path == "/script.js":
+            self._send(read_text(SCRIPT_FILE).encode(), "application/javascript; charset=utf-8")
+            return
+
+        self._send(b"Not Found", "text/plain", 404)
+
+    def do_POST(self):
         path = urlparse(self.path).path
+
         if path != "/api/check":
-            self._send(b"Not Found", "text/plain; charset=utf-8", status=404)
+            self._send(b"Not Found", "text/plain", 404)
             return
 
         length = int(self.headers.get("Content-Length", "0"))
-        raw = self.rfile.read(length).decode("utf-8", errors="ignore")
+        raw = self.rfile.read(length).decode()
+
         try:
             payload = json.loads(raw or "{}")
         except json.JSONDecodeError:
             self._send(
-                json.dumps({"error": "Invalid JSON"}).encode("utf-8"),
-                "application/json; charset=utf-8",
-                status=400,
+                json.dumps({"error": "Invalid JSON"}).encode(),
+                "application/json",
+                400,
             )
             return
 
-        url = str(payload.get("url", "")).strip()
+        url = payload.get("url", "").strip()
+
         if not url:
             self._send(
-                json.dumps({"error": "Please enter a URL"}).encode("utf-8"),
-                "application/json; charset=utf-8",
-                status=400,
+                json.dumps({"error": "Please enter a URL"}).encode(),
+                "application/json",
+                400,
             )
             return
 
-                      body = safe_result({"url": url})
+        body = safe_result({"url": url})
+
         self._send(
-            json.dumps(body).encode("utf-8"),
-            "application/json; charset=utf-8",
+            json.dumps(body).encode(),
+            "application/json",
         )
 
-    def log_message(self, format: str, *args) -> None:
+    def log_message(self, format, *args):
         return
 
-def main() -> int:
+
+def main():
     server = ThreadingHTTPServer((HOST, PORT), Handler)
 
     print(f"Server running on {HOST}:{PORT}")
@@ -133,8 +147,6 @@ def main() -> int:
     finally:
         server.server_close()
 
-    return 0
-
 
 if __name__ == "__main__":
-    raise SystemExit(main())
+    main()
